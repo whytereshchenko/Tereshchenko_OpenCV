@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ukr" xml:lang="ukr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="© Tereshchenko Daniil , 2023">
+<meta name="dcterms.date" content="2023-12-10">
+<meta name="description" content="Документ зроблено за допомогою Quarto">
+
+<title>Лабораторна робота 1. Робота з OpenCV у середовищі Anaconda</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Image_lab1_quarto_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Image_lab1_quarto_files/libs/quarto-html/quarto.js"></script>
+<script src="Image_lab1_quarto_files/libs/quarto-html/popper.min.js"></script>
+<script src="Image_lab1_quarto_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Image_lab1_quarto_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Image_lab1_quarto_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Image_lab1_quarto_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Image_lab1_quarto_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Image_lab1_quarto_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Image_lab1_quarto_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#що-ви-будете-вміти" id="toc-що-ви-будете-вміти" class="nav-link active" data-scroll-target="#що-ви-будете-вміти">Що ви будете вміти?</a></li>
+  <li><a href="#налаштування-віртуального-середовища" id="toc-налаштування-віртуального-середовища" class="nav-link" data-scroll-target="#налаштування-віртуального-середовища">Налаштування віртуального середовища</a>
+  <ul class="collapse">
+  <li><a href="#інсталяція-дистрибутива-python-anaconda" id="toc-інсталяція-дистрибутива-python-anaconda" class="nav-link" data-scroll-target="#інсталяція-дистрибутива-python-anaconda">Інсталяція дистрибутива Python Anaconda</a></li>
+  <li><a href="#налаштування-віртуального-середовища-за-допомогою-conda" id="toc-налаштування-віртуального-середовища-за-допомогою-conda" class="nav-link" data-scroll-target="#налаштування-віртуального-середовища-за-допомогою-conda">Налаштування віртуального середовища за допомогою Conda</a></li>
+  <li><a href="#інсталювання-бібліотеки-opencv-та-допоміжних-пакетів" id="toc-інсталювання-бібліотеки-opencv-та-допоміжних-пакетів" class="nav-link" data-scroll-target="#інсталювання-бібліотеки-opencv-та-допоміжних-пакетів">Інсталювання бібліотеки OpenCV та допоміжних пакетів</a></li>
+  <li><a href="#створення-notebook-документа" id="toc-створення-notebook-документа" class="nav-link" data-scroll-target="#створення-notebook-документа">Створення Notebook-документа</a></li>
+  <li><a href="#підключення-бібліотек-імпортекспорт-забраження-у-notebook-документ" id="toc-підключення-бібліотек-імпортекспорт-забраження-у-notebook-документ" class="nav-link" data-scroll-target="#підключення-бібліотек-імпортекспорт-забраження-у-notebook-документ">Підключення бібліотек, імпорт/експорт забраження у Notebook-документ</a></li>
+  <li><a href="#імпорт-зображення.-деталі-зображення" id="toc-імпорт-зображення.-деталі-зображення" class="nav-link" data-scroll-target="#імпорт-зображення.-деталі-зображення">Імпорт зображення. Деталі зображення</a></li>
+  <li><a href="#розділення-зображення-на-канали.-напівтонове-зображення" id="toc-розділення-зображення-на-канали.-напівтонове-зображення" class="nav-link" data-scroll-target="#розділення-зображення-на-канали.-напівтонове-зображення">Розділення зображення на канали. Напівтонове зображення</a></li>
+  </ul></li>
+  <li><a href="#завдання-для-самостіної-роботи" id="toc-завдання-для-самостіної-роботи" class="nav-link" data-scroll-target="#завдання-для-самостіної-роботи">Завдання для самостіної роботи</a></li>
+  <li><a href="#контрольні-запитання" id="toc-контрольні-запитання" class="nav-link" data-scroll-target="#контрольні-запитання">Контрольні запитання</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Лабораторна робота 1. Робота з OpenCV у середовищі Anaconda</h1>
+</div>
+
+<div>
+  <div class="description">
+    Документ зроблено за допомогою <a href="https://quarto.org/">Quarto</a>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>© <a href="https://github.com/whytereshchenko/Tereshchenko_OpenCV"><span style="color: blue;">Tereshchenko Daniil </span></a>, 2023 </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 10, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<p><strong>Мета:</strong> <em>quick start для роботи з бібліотекою з відкритим кодом для комп’ютерного зору та обробки зображень OpenCV у середовищі Anaconda із застосуванням Jupyter Notebook засобами мови програмування Python.</em></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Примітка
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Попередньо потрібно опрацювати лекцію 7.</p>
+</div>
+</div>
+<section id="що-ви-будете-вміти" class="level2">
+<h2 class="anchored" data-anchor-id="що-ви-будете-вміти">Що ви будете вміти?</h2>
+<ul>
+<li>Інсталювати дистрибутив Python Anaconda.</li>
+<li>Налаштовувати віртуальне середовище за допомогою системи управління віртуальним середовищем Conda для Windows.</li>
+<li>Інсталювати OpenCV та допоміжні бібліотеки.</li>
+<li>Створювати у середовищі Jupyter Lab (або Jupyter Notebook) з використанням видавничої системи Quarto інтерактивні документи на кшталт того, який ви наразі читаєте.</li>
+<li>Здійснювати імпорт/експорт забраження для подальшої обробки.</li>
+</ul>
+</section>
+<section id="налаштування-віртуального-середовища" class="level2">
+<h2 class="anchored" data-anchor-id="налаштування-віртуального-середовища">Налаштування віртуального середовища</h2>
+<p>“<a href="https://uk.wikipedia.org/wiki/Anaconda_(Python_distribution)">Anaconda</a> – це вільно та відкрито розповсюджуваний (freemium) дистрибутив різних програмних продуктів, зокрема, мов програмування Python та R. Платформа спеціалізується на”наукових обчисленнях” (scientific computing): наука про дані, застосуванні методів машинного навчання, широкомасштабна обробка даних, передбачувальна аналітика тощо. Використання платформи має на меті спрощення управління пакетами та їх розгортання. <strong>Версіями пакетів керує система управління пакетами <a href="https://conda.io/en/latest/">Conda</a></strong>. Дистрибутив Anaconda використовується понад 15 мільйонами користувачів і містить більше 1500 популярних пакетів наукових даних, придатних для Windows, Linux та MacOS, наприклад, NumPy, SciPy та Ggplot2” [1].<br>
+Важливою складовою збірки Anaconda є пакет <a href="https://jupyter.org/">Jupyter</a>, зокрема Jupyter Lab та Jupyter Notebook – вебзастосунки з відкритим кодом, які дозволяють створювати та обмінюватися документами, що містять живий код, рівняння, візуалізацію та текст. Використання включає: очищення та трансформацію даних, чисельне моделювання, статистичне моделювання, візуалізація даних, машинне навчання та багато іншого.<br>
+Чому саме збірка Anaconda зі своєю екосистемою буде використовуватися нами як інструмент для обробки зображень?</p>
+<ul>
+<li>тому що обробка зображень в рамках нашого курсу розглядається як складова частина препроцессінгу для задач <em>комп’ютерного зору</em> (Computer Vision);</li>
+<li><em>комп’ютерний зір</em> – це сфера інформаційних технологій, яка має безпосереднє відношення до <em>машинного навчання</em>;</li>
+<li>екосистема Anaconda є найпоширенішим інструментом, стандартом “де-факто”, для задач машинного навчання у сферах Artifical Intelligence та Data Science.</li>
+</ul>
+<p>Тому, в цій лабораторній роботі покроково відпрацьовуються наступні питання:</p>
+<ul>
+<li>нсталяція дистрибутива Python Anaconda для Windows;</li>
+<li>налаштовування віртуального середовища за допомогою системи управління віртуальним середовищем Conda, яка входить до складу Anaconda, для роботи з OpenCV;<br>
+</li>
+<li>інсталювання бібліотеки OpenCV та допоміжних пакетів у настроєне віртуальне середовище для подальшої роботи.</li>
+</ul>
+<section id="інсталяція-дистрибутива-python-anaconda" class="level3">
+<h3 class="anchored" data-anchor-id="інсталяція-дистрибутива-python-anaconda">Інсталяція дистрибутива Python Anaconda</h3>
+<ol type="1">
+<li><a href="https://www.anaconda.com/">Завантажуємо</a> Anaconda.</li>
+<li>Встановлюємо Anaconda згідно з <a href="https://www.machinelearningmastery.ru/setup-python-environment-machine-learning-deep-learning-anaconda/">інструкцією</a>.</li>
+<li>Запускаємо і обновляємо Anaconda.</li>
+</ol>
+<p>Anaconda поставляється з набором графічних інструментів під назвою Anaconda Navigator. Ви можете запустити Anaconda Navigator, відкривши його з панелі запуску додатків. Anaconda Navigator дозволяє інсталювати та обновляти пакети, настроювати та управляти віртуальним середовищем тощо. Про Anaconda Navigator детально можна дізнатися <a href="https://docs.continuum.io/anaconda/navigator/">тут</a>.<br>
+Однак, тут ми розглянемо роботу з Conda через інтерфейс командного рядка, який дозволить краще зрозуміти суть даного інстурменту і роботу з ним.</p>
+<p>Перевіряємо версію <code>conda</code>:</p>
+<p><code>conda -V</code></p>
+<p>Аналогічно перевіряємо версію <code>Python</code>:</p>
+<p><code>python -V</code></p>
+<p>Для того, щоб перевірити більш загально інформацію, яка, зокрема включає ввод версій інтерпрета та інформацію стосовно віртуального середовища тощо.</p>
+<p>Якщо <code>conda</code> і <code>python</code> встановлені коректно ми маємо побачити їх версії. Пісдя цього необхідно виконати апгрейд середовища за допомогою наступним команд:</p>
+<p><code>conda update conda</code><br>
+<code>conds update anaconda</code></p>
+<p>або за допомогою загальної команди:</p>
+<p><code>conda update --all</code></p>
+<p>В процесі цього програма може запропонувати обновити певні пакети.<br>
+Після успішного виконання цих операцій можна перейти до налаштування віртуального середовища, в якому ми будемо встановлювати всі необхідні пакети для роботи з зображеннями.</p>
+</section>
+<section id="налаштування-віртуального-середовища-за-допомогою-conda" class="level3">
+<h3 class="anchored" data-anchor-id="налаштування-віртуального-середовища-за-допомогою-conda">Налаштування віртуального середовища за допомогою Conda</h3>
+<p>Слід зазначити, що з консолі можна встановлювати пакети <code>Python</code> двома способами:<br>
+* за допомогою менеджера пакетів <a href="https://pypi.org/project/pip/">pip</a>, що входить до складу інсталяції python;<br>
+* за допомогою conda.</p>
+<p>Слід зазначити, що на відміну від <code>pip</code>, який є менеджером пакетів, <code>conda</code> є програмою більш високого рівня, яка, окрім функцій менеджера пакетів, забезпечує функції управління віртуальним середовищем.<br>
+Базова версія <code>Python</code> містить у совєму складі інструмент для створення віртуальних середовищ <code>Virtualenv</code>. Варіант налаштування віртуального середовища за допомогою <code>Virtualenv</code> можна подивитися, наприклад, <a href="https://habr.com/ru/sandbox/131393/">тут</a>.<br>
+<code>Conda</code> включає власний менеджер середовища і дає деякі переваги щодо <code>Virtualenv</code>. Крім того, середовища <code>Conda</code> повністю сумісні з базовими пакетами мови <code>Python</code>, які можуть бути встановлені за допомогою <code>pip</code>.<br>
+Тому робота з <code>Conda</code> у цьому плані є більш ефективною. Продемонструєм це на прикладі, налаштувавши віртульне середовище для роботи з <code>OpenCV</code>.</p>
+<p>Для того,щоб продивитися перелік доступних віртуальних середовищ можна скористатися командою:</p>
+<p><code>conda env list</code></p>
+<p>Створимо середовище з іменем <code>myenv</code>:</p>
+<p><code>conda create --name myenv</code></p>
+<p>Виконавши повторно команду <code>conda env list</code>, можна впевнитися, чи було створене відповідне середовище. Якщо операція пройшла успішно, можна зробити його активним (активне середвище у списку команди <code>list</code> позначається зірочкою, а напочатку командного рядка його ім’я вказуэться у дужках.<br>
+Для активації необхдно виконати наступну команду:</p>
+<p><code>conda activate myenv</code></p>
+<p>Деактивація активного середовища виконується за допомогою команди <code>conda deactivate</code>, або просто <code>deactivate</code>.</p>
+<p>У разі виникнення потреби видалити певне віртуальне середовище, необхідно виконати наступну команду:</p>
+<p><code>conda remove --name &lt;ім'я середовища&gt; --all</code></p>
+<p>Тепер у створеному віртуальному середовищи можна встановити необхідні пакети необхідних версій, у тому числі, потрібну версію інтерпретатора <code>Python</code>. Більш детально про це можна подивится, наприклад, <a href="https://proglib.io/p/ml-python-setup/">тут</a>.</p>
+</section>
+<section id="інсталювання-бібліотеки-opencv-та-допоміжних-пакетів" class="level3">
+<h3 class="anchored" data-anchor-id="інсталювання-бібліотеки-opencv-та-допоміжних-пакетів">Інсталювання бібліотеки OpenCV та допоміжних пакетів</h3>
+<p>Перелік встановлених пакетів <code>conda</code> можна за допомогою команди</p>
+<p><code>conda list</code></p>
+<p>в результаті чого, на екран буде виведено список пакетів активного середовища.</p>
+<p>Пакети встановлюються з репозиторіїв, званих <strong>channels by Conda</strong>. Щоб виконати пошук певного пакета, запустіть пошук <package name=""></package></p>
+<p><code>conda search openCV</code></p>
+<p>Щоби встановити пакет необхідно запустити команду</p>
+<p><code>conda install &lt;package name&gt;</code></p>
+<p>Іноді ви не зможете знайти потрібні вам пакети на базових каналах. Детально про це та нюанси щодо пошуку, оновлення та видалення пакетів можна прочитати, наприклад, <a href="https://proglib.io/p/ml-python-setup/">тут</a>.</p>
+<p>Іноді під час налаштування <code>Python</code> для машинного навчання нам можуть знадобитися чисті пакети <code>Python</code>, які будуть недоступні на каналах <code>Conda</code>. У цьому випадку можна скористатися <code>pip</code>. Наприклад, так ми встановлюємо <code>OpenCV</code>:</p>
+<p><code>pip install opencv-python</code></p>
+<p>Натомість потрібні нам пакети для роботи з матрицями та для математичних обчислееь і візуалізації результатів <code>numpy</code> та <code>matplotlib</code> можна встановити так:</p>
+<p><code>conda install numpy</code><br>
+<code>conda install matplotlib</code></p>
+<p><img src="Image_lab1_quarto_files/figure-html/392deabc-3-07b1620f-73d1-457e-bb81-0e24dafcf193.png" class="img-fluid" alt="Знімок екрана 2023-12-10 о 15.05.15.png"> <img src="Image_lab1_quarto_files/figure-html/392deabc-4-0b4d7762-ada2-4121-8f65-f97aea8b796b.png" class="img-fluid" alt="Знімок екрана 2023-12-10 о 15.05.23.png"> <img src="Image_lab1_quarto_files/figure-html/392deabc-1-019f7b04-c3b8-4f43-805c-7612ec9edb83.png" class="img-fluid" alt="Знімок екрана 2023-12-10 о 15.34.39.png"> <img src="Image_lab1_quarto_files/figure-html/392deabc-5-0e4bc4b0-530f-4978-a4a9-e89994ef34b7.png" class="img-fluid" alt="Знімок екрана 2023-12-10 о 15.35.36.png"> <img src="Image_lab1_quarto_files/figure-html/392deabc-6-638b5fd0-104c-49ca-9b0d-ae3df8c12710.png" class="img-fluid" alt="Знімок екрана 2023-12-10 о 20.58.43.png"> <img src="Image_lab1_quarto_files/figure-html/392deabc-2-079652f4-13b2-4030-9251-bc97ed175b7d.png" class="img-fluid" alt="Знімок екрана 2023-12-10 о 20.58.47.png"></p>
+</section>
+<section id="створення-notebook-документа" class="level3">
+<h3 class="anchored" data-anchor-id="створення-notebook-документа">Створення Notebook-документа</h3>
+<p>Для подальшої роботи необхідно завантажити <code>Anaconda Navigator</code> і в його середовищі вибрати зі списку доступних віртуальих середовищ потрібне віртуальне середовище (у нашому випадку <code>myenv</code>) і активувати його. Потім створити робочий Notebook-документа, так званий “зошит” <code>ipython</code>, в якому можна завантажити потрібні для роботи бібліотеки і писати код.<br>
+Як створити Notebook-документ за допомогою Jupyter Notebook і як з ним працювати можна подивитися <a href="https://devpractice.ru/python-lesson-1-install/">тут</a>, <a href="https://devpractice.ru/python-lesson-6-work-in-jupyter-notebook/">тут</a> і <a href="https://jupyter-notebook.readthedocs.io/en/stable/notebook.html">тут</a></p>
+</section>
+<section id="підключення-бібліотек-імпортекспорт-забраження-у-notebook-документ" class="level3">
+<h3 class="anchored" data-anchor-id="підключення-бібліотек-імпортекспорт-забраження-у-notebook-документ">Підключення бібліотек, імпорт/експорт забраження у Notebook-документ</h3>
+<div class="cell" data-tags="[]" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Імпортуємо пакети</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2 <span class="im">as</span> cv</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># import opencv</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'version cv2: </span><span class="sc">%s</span><span class="st">'</span> <span class="op">%</span> cv.__version__)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># або так</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># print(f'version cv2: {cv.__version__}')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>version cv2: 4.6.0</code></pre>
+</div>
+</div>
+</section>
+<section id="імпорт-зображення.-деталі-зображення" class="level3">
+<h3 class="anchored" data-anchor-id="імпорт-зображення.-деталі-зображення">Імпорт зображення. Деталі зображення</h3>
+<div class="cell" data-execution_count="6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Завантажуємо RGB-зображення та виводимо його характеристики</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 960 × 1306</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> cv.imread(<span class="st">'me.png'</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># img = cv.imread('rose.png', cv.IMREAD_GRAYSCALE)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># img</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Shape/Dimensions: </span><span class="sc">{</span>image<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Number of pixel: </span><span class="sc">{</span>image<span class="sc">.</span>size<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Shape/Dimensions: (1306, 960, 3)
+Number of pixel: 3761280</code></pre>
+</div>
+</div>
+</section>
+<section id="розділення-зображення-на-канали.-напівтонове-зображення" class="level3">
+<h3 class="anchored" data-anchor-id="розділення-зображення-на-канали.-напівтонове-зображення">Розділення зображення на канали. Напівтонове зображення</h3>
+<p>Робочі посилання: <a href="https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_gui/py_image_display/py_image_display.html">1</a>,</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>blue, green, red <span class="op">=</span> cv.split(image) <span class="co"># Split the image into its channels</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>img_gs <span class="op">=</span> cv.imread(<span class="st">'me.png'</span>, cv.IMREAD_GRAYSCALE) <span class="co"># Convert image to grayscale</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># img_gs = cv.imread('rose.png', 0)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Візуалізація зображення </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>cv.imshow(<span class="st">'me'</span>, me_gs)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>cv.waitKey(<span class="dv">0</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>cv.destroyAllWindows()</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Запис зображення на диск</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>cv.imwrite(<span class="st">'me_s.png'</span>, me_gs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-tags="[]" data-execution_count="2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Візцалізація ззасобами matplotlib</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Завантажте зображення за допомогою OpenCV</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> cv2.imread(<span class="st">'me.png'</span>, cv2.IMREAD_GRAYSCALE)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Перевірте, чи зображення було завантажено успішно</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> image <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Візуалізація зображення за допомогою Matplotlib</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    plt.imshow(image, cmap<span class="op">=</span><span class="st">'gray'</span>)  <span class="co"># Встановлення колірної мапи на "сірий" для зображень у відтінках сірого</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'Зображення'</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">'off'</span>)  <span class="co"># Вимкніть вісі x та y</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Не вдалося завантажити зображення.'</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Запис зображення на диск за допомогою OpenCV</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>cv2.imwrite(<span class="st">'me_s.png'</span>, image)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><img src="Image_lab1_quarto_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>True</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="завдання-для-самостіної-роботи" class="level2">
+<h2 class="anchored" data-anchor-id="завдання-для-самостіної-роботи">Завдання для самостіної роботи</h2>
+<ol type="1">
+<li><p>Завантажити і встановити збірку <code>Python Anaconda</code>.</p></li>
+<li><p>Через інтерфейс командного рядка налаштувати за допомогою <code>conda</code> віртуальне середовище з ім’ям <code>&lt;StudentLastName&gt;_OpenCV</code>. Етапи роботи підтвердити скріншотами.</p></li>
+<li><p>Проінсталювати в створене середовище пакети, необхідні для роботи з <code>OpenCV</code>.</p></li>
+<li><p>Створити Notebook-документ <code>&lt;lab_1_StudentLastName&gt;</code> за допомогою Jupyter Notebook. (Див. <a href="https://devpractice.ru/python-lesson-1-install/">тут</a>, <a href="https://devpractice.ru/python-lesson-6-work-in-jupyter-notebook/">тут</a> і <a href="https://jupyter-notebook.readthedocs.io/en/stable/notebook.html">тут</a>).</p></li>
+<li><p>Відобразити в робочому документі (“зошиті” ipython) виконання пунктів 1-3 індивідуального завдання.</p></li>
+<li><p>Сфотографувати <strong>себе</strong> на камеру і виконати імпорт і візуалізацію кольорового та напівтонового зображення у робочий документ.</p></li>
+<li><p>Виконати переведення кольорового зображення у напівтонове і записати його на диск.</p></li>
+<li><p>Робочий документ оформити у вигляді Notebook-документу (файл <strong>.ipynb</strong>).</p></li>
+<li><p>Дати відповіді на контрольні запитання.</p></li>
+<li><p>Скомпілювати звіт у форматі <strong>.html</strong>. Для цього необхідно завантажити термінал і у командному рядку запустити наступну команду:</p></li>
+</ol>
+<p><code>jupyter nbconvert lab_1_StudentLastName.ipynb --to html</code></p>
+<ol start="10" type="1">
+<li>Проект розмістити у власному репозиторії на GitHub (посилання на нього вказати у відповіді на завдання на krnu.org). Проект має складатися мінімум з двох файлів: <code>lab_1_StudentLastName.ipynb</code> та <code>lab_1_StudentLastName.html</code></li>
+</ol>
+</section>
+<section id="контрольні-запитання" class="level2">
+<h2 class="anchored" data-anchor-id="контрольні-запитання">Контрольні запитання</h2>
+<ol type="1">
+<li>Що таке <code>pip</code> і <code>conda</code> та чим вони відрізняються між собою?</li>
+</ol>
+<ul>
+<li>conda може встановлювати бібліотеки, які не є Python-пакетами, і може створювати ізольовані середовища для різних проектів. pip працює лише з Python-пакетами і не управляє середовищами</li>
+</ul>
+<ol start="2" type="1">
+<li>Як буде виглядати виконання пунктів 1-3 індивідуального завдання за допомогою <code>Virtualenv</code>?</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Image_lab1_quarto_files/figure-html/13553ce1-1-45a5d665-55f5-4aa8-8870-089235a7b33f.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Знімок екрана 2023-12-10 о 21.21.26.png</figcaption>
+</figure>
+</div>
+<ol start="3" type="1">
+<li>Як виконати візуалізацію зображення (див. п.3) засобами <code>mathplotlib</code>?</li>
+</ol>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Завантажте зображення за допомогою OpenCV</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> cv2.imread(<span class="st">'me.png'</span>, cv2.IMREAD_GRAYSCALE)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Перевірте, чи зображення було завантажено успішно</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> image <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Візуалізація зображення за допомогою Matplotlib</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    plt.imshow(image, cmap<span class="op">=</span><span class="st">'gray'</span>)  <span class="co"># Встановлення колірної мапи на "сірий" для зображень у відтінках сірого</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'Зображення'</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">'off'</span>)  <span class="co"># Вимкніть вісі x та y</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Не вдалося завантажити зображення.'</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Запис зображення на диск за допомогою OpenCV</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>cv2.imwrite(<span class="st">'me_s.png'</span>, image)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<ol start="4" type="1">
+<li>Як виконати компіляцію вхідного документа <code>Jupyter Notebook</code> із його середовища , не використовуючи інтерфейс командного рядка? <img src="Image_lab1_quarto_files/figure-html/e7419c2f-1-4534e038-3242-4a61-b45f-35fd9bc5cd21.png" class="img-fluid" alt="Знімок екрана 2023-12-10 о 21.20.31.png">.</li>
+</ol>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li><a href="https://uk.wikipedia.org/wiki/Anaconda_(Python_distribution)">Anaconda. (Python distribution)</a></li>
+<li><a href="https://conda.io/en/latest/">Conda.</a></li>
+<li><a href="https://data-visualization-blog.netlify.app/posts/quarto/">Научно-издательская система Quarto.</a></li>
+<li><a href="https://git-scm.com/book/en/v2">Pro Git Book.</a></li>
+</ol>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
